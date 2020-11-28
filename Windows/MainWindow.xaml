@@ -8,10 +8,13 @@
         mc:Ignorable="d"
         Height="450" Width="800" WindowStartupLocation="CenterScreen"
         Title="ShellBee Helper">
-    <TabControl x:Name="TabsList" Margin="5" >
-        <TabItem x:Name="ContractsFromOutlook" Header="Contracts from Outlook">
-            <Tabs:ContractsFromOutlookTab>
-            </Tabs:ContractsFromOutlookTab>
-        </TabItem>
-    </TabControl>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TabControl x:Name="TabsList" Grid.Column="0" Margin="5" />
+        <TextBlock x:Name="LogBox" Grid.Column="1" Margin="5" TextWrapping="Wrap" />
+    </Grid>
 </Window>

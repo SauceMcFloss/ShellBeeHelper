@@ -29,7 +29,7 @@ namespace ShellBeeHelper
             set { _LogBox = value; }
         }
 
-        public string LogPath = "C:\\Users\\" + Environment.UserName + "\\Desktop\\ShellBeeHelper_Logs.txt";
+        public static string LogPath = "C:\\Users\\" + Environment.UserName + "\\Desktop\\ShellBeeHelper.log";
 
         #endregion
 
@@ -37,8 +37,7 @@ namespace ShellBeeHelper
 
         public void Error(Exception ex = null, string extraLogs = "")
         {
-            LogBox.Text += DateTime.Now.ToString() + ((ex != null) ? ":\t" + ex.ToString() + "\n" : "");
-            LogBox.Text += String.IsNullOrWhiteSpace(extraLogs) ? "" : "\t" + extraLogs + "\n";
+            Log(extraLogs);
 
             using (StreamWriter sw = File.Exists(LogPath) ? File.AppendText(LogPath) : File.CreateText(LogPath))
             {

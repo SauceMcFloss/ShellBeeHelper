@@ -1,19 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using ShellBeeHelper.Tabs;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Xsl;
 
 namespace ShellBeeHelper.Windows
 {
@@ -27,13 +13,18 @@ namespace ShellBeeHelper.Windows
         public MainWindow()
         {
             InitializeComponent();
+
+            Log = new Logger();
+            Log.LogBox = LogBox;
+
+            TabsList.Items.Add(new TabItem() { Header = "Contracts from Outlook", Content = new ContractsFromOutlookTab(Log) });
         }
 
         #endregion
 
         #region Variables
 
-        private Logger _Log = new Logger();
+        private Logger _Log = null;
         public Logger Log
         {
             get { return _Log; }
@@ -43,12 +34,6 @@ namespace ShellBeeHelper.Windows
         #endregion
 
         #region Events
-
-        /*private void LogBox_Initialized(object sender, EventArgs e)
-        {
-            Logger.LogBox = LogBox;
-        }*/
-
         
         #endregion
 

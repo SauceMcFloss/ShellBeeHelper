@@ -9,20 +9,14 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Button x:Name="ScanButton" Grid.Row="0" HorizontalAlignment="Center" Margin="5" 
+        <Button x:Name="ScanButton" Grid.Row="1" HorizontalAlignment="Center" Margin="5" 
                         Content="Scan for Contracts" 
                         Click="ScanButton_Click" />
-
-        <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" Margin="5" >
-            <TextBlock x:Name="LogBox" HorizontalAlignment="Center" Margin="5" 
-                               Text="" TextWrapping="Wrap"
-                               Initialized="LogBox_Initialized" />
-        </ScrollViewer>
     </Grid>
 </UserControl>

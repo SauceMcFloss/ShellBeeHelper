@@ -23,18 +23,42 @@ namespace ShellBeeHelper.Tabs
     /// </summary>
     public partial class ContractsFromOutlookTab : UserControl
     {
-        public ContractsFromOutlookTab()
+        #region Constructor
+
+        public ContractsFromOutlookTab(Logger log)
         {
             InitializeComponent();
+
+            Log = log;
         }
 
-        Logger Log = null;
+        #endregion
+
+        #region Variables
+
+        private Logger _Log = null;
+        public Logger Log
+        {
+            get { return _Log; }
+            set { _Log = value; }
+        }
+
+        #endregion
+
+        #region Events
+
+        #endregion
+
+        #region Methods and Functions
+
+        #endregion
+
+        //Logger Log = null;
 
         private void ScanButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                
                 List<string> icList = new List<string>();
 
                 #region Outlook
@@ -80,7 +104,7 @@ namespace ShellBeeHelper.Tabs
                                 }
                                 else
                                 {
-                                    Log.Error(null, "Encountered unknown email format.\n\tFrom: " + msg.SenderName + "\n\tSubject: " + msg.Subject + "\n\tReceived at: " + msg.ReceivedTime);
+                                    Log.Log("Encountered unknown email format.\n\tFrom: " + msg.SenderName + "\n\tSubject: " + msg.Subject + "\n\tReceived at: " + msg.ReceivedTime);
                                     continue;
                                 }
 
@@ -196,11 +220,6 @@ namespace ShellBeeHelper.Tabs
             {
                 Log.Error(ex, "Error thrown to higher level to avoid crashing.");
             }
-        }
-
-        private void LogBox_Initialized(object sender, EventArgs e)
-        {
-            Log = new Logger();
         }
     }
 }
