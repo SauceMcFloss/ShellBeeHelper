@@ -38,24 +38,24 @@ namespace ShellBeeHelper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Contracts")]
-        public string Folder {
+        public string SourceFolder {
             get {
-                return ((string)(this["Folder"]));
+                return ((string)(this["SourceFolder"]));
             }
             set {
-                this["Folder"] = value;
+                this["SourceFolder"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LogFile {
+        [global::System.Configuration.DefaultSettingValueAttribute("Completed Contracts")]
+        public string DestFolder {
             get {
-                return ((string)(this["LogFile"]));
+                return ((string)(this["DestFolder"]));
             }
             set {
-                this["LogFile"] = value;
+                this["DestFolder"] = value;
             }
         }
     }

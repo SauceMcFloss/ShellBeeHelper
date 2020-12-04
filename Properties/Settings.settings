@@ -5,11 +5,11 @@
     <Setting Name="EmailAddress" Type="System.String" Scope="User">
       <Value Profile="(Default)">shelby@zojakworldwide.com</Value>
     </Setting>
-    <Setting Name="Folder" Type="System.String" Scope="User">
+    <Setting Name="SourceFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">Contracts</Value>
     </Setting>
-    <Setting Name="LogFile" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="DestFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Completed Contracts</Value>
     </Setting>
   </Settings>
 </SettingsFile>

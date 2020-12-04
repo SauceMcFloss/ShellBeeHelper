@@ -10,13 +10,29 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Button x:Name="ScanButton" Grid.Row="1" HorizontalAlignment="Center" Margin="5" 
-                        Content="Scan for Contracts" 
-                        Click="ScanButton_Click" />
+        <Label x:Name="EmailAddressLabel" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="5" 
+               Content="Email Address: " />
+        <TextBox x:Name="EmailAddressTextBox" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5" 
+                 LostFocus="EmailAddressTextBox_LostFocus" />
+
+        <Label x:Name="SourceFolderLabel" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="5" 
+               Content="Source Folder: " />
+        <TextBox x:Name="SourceFolderTextBox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5" />
+
+        <Label x:Name="DestFolderLabel" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Margin="5" 
+               Content="Destination Folder: " />
+        <TextBox x:Name="DestFolderTextBox" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5" />
+
+        <Button x:Name="ScanButton" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="5" 
+                Content="Scan for Contracts" 
+                Click="ScanButton_Click" />
     </Grid>
 </UserControl>

@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Globalization;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Excel = Microsoft.Office.Interop.Excel;
-using System.Reflection;
+using ShellBeeHelper.Properties;
 
 namespace ShellBeeHelper.Tabs
 {
@@ -30,6 +24,10 @@ namespace ShellBeeHelper.Tabs
             InitializeComponent();
 
             Log = log;
+
+            EmailAddressTextBox.Text = Settings.Default.EmailAddress;
+            SourceFolderTextBox.Text = Settings.Default.SourceFolder;
+            DestFolderTextBox.Text = Settings.Default.DestFolder;
         }
 
         #endregion
@@ -47,34 +45,58 @@ namespace ShellBeeHelper.Tabs
 
         #region Events
 
-        #endregion
-
-        #region Methods and Functions
-
-        #endregion
-
-        //Logger Log = null;
-
         private void ScanButton_Click(object sender, RoutedEventArgs e)
         {
+            #region Validation
+
+            if (!IsValidEmail(EmailAddressTextBox.Text))
+            {
+                Log.Log("No valid email address entered.");
+                EmailAddressTextBox.Background = System.Windows.Media.Brushes.Red;
+                return;
+            }
+            if (String.IsNullOrWhiteSpace(SourceFolderTextBox.Text))
+            {
+                Log.Log("No source folder name entered.");
+                SourceFolderTextBox.Background = System.Windows.Media.Brushes.Red;
+                return;
+            }
+            if (String.IsNullOrWhiteSpace(DestFolderTextBox.Text))
+            {
+                Log.Log("No destination folder name entered.");
+                DestFolderTextBox.Background = System.Windows.Media.Brushes.Red;
+                return;
+            }
+
+            #endregion
+
             try
             {
                 List<string> icList = new List<string>();
 
                 #region Outlook
 
+                Outlook.Application oApp = null;
+                Outlook.NameSpace oNameSpace = null;
+                Outlook.MAPIFolder contractsSourceFolder = null;
+                Outlook.MAPIFolder contractsDestFolder = null;
+                Outlook.Items items = null;
+                List<Outlook.MailItem> messages = null;
+
                 try
                 {
-                    Outlook.Application oApp = new Outlook.Application();
-                    Outlook.NameSpace oNameSpace = oApp.GetNamespace("mapi");
+                    oApp = new Outlook.Application();
+                    oNameSpace = oApp.GetNamespace("mapi");
                     oNameSpace.Logon(Missing.Value, Missing.Value, false, true);
 
-                    Outlook.MAPIFolder contractsFolder = oNameSpace.Folders["shelby@zojakworldwide.com"].Folders["Contracts"];
-                    Outlook.Items items = contractsFolder.Items;
+                    contractsSourceFolder = oNameSpace.Folders[EmailAddressTextBox.Text].Folders[SourceFolderTextBox.Text];
+                    contractsDestFolder = oNameSpace.Folders[EmailAddressTextBox.Text].Folders[DestFolderTextBox.Text];
+                    items = contractsSourceFolder.Items;
+                    messages = new List<Outlook.MailItem>();
 
                     try
                     {
-                        foreach (Outlook.MailItem msg in items)
+                        foreach(Outlook.MailItem msg in items)
                         {
                             if (msg.SenderName.Contains("DocuSign"))
                             {
@@ -110,6 +132,8 @@ namespace ShellBeeHelper.Tabs
 
                                 importantContent = importantContent.Trim(' ', '\r', '\n');
                                 icList.Add(importantContent);
+                                messages.Add(msg);
+
                             }
                             catch (Exception ex)
                             {
@@ -123,96 +147,152 @@ namespace ShellBeeHelper.Tabs
                     catch (Exception ex)
                     {
                         Log.Error(ex, "Error walking through MailItems.");
+                        return;
                     }
-                    oNameSpace.Logoff();
-                    oApp.Quit();
-
-                    //Explicitly release objects.
-                    items = null;
-                    contractsFolder = null;
-                    oNameSpace = null;
-                    oApp = null;
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Error Setting up or leaving Outlook.");
+                    return;
                 }
 
                 #endregion
 
                 #region Excel
 
-                Excel.Application eApp = new Excel.Application();
-                Excel.Workbook workbook = eApp.Workbooks.Add();
-                Excel.Worksheet worksheet = workbook.ActiveSheet;
+                Excel.Application eApp = null;
+                Excel.Workbook workbook = null;
+                Excel.Worksheet worksheet = null;
 
-                int i = 1;
-                foreach (string contract in icList.Distinct().ToList())
+                try
                 {
-                    string tempcontract = contract.Trim(')');
+                    eApp = new Excel.Application();
+                    workbook = eApp.Workbooks.Add();
+                    worksheet = workbook.ActiveSheet;
 
-                    string email = "";
-                    foreach (char letter in contract.Substring(0, contract.Length - 1).Reverse())
+                    int i = 1;
+                    foreach (string contract in icList.Distinct().ToList())
                     {
-                        tempcontract = tempcontract.Remove(tempcontract.Length - 1);
-                        if (letter == '(')
-                        {
-                            break;
-                        }
-                        email = email.Insert(0, letter.ToString());
-                    }
-                    worksheet.Cells[i, 7] = email;
+                        string tempcontract = contract.Trim(')');
 
-                    if (tempcontract.Contains("("))
-                    {
-                        tempcontract = tempcontract.Trim(')', ' ');
-
-                        // label
-                        string name = "";
-                        foreach (char letter in tempcontract.Reverse())
+                        string email = "";
+                        foreach (char letter in contract.Substring(0, contract.Length - 1).Reverse())
                         {
                             tempcontract = tempcontract.Remove(tempcontract.Length - 1);
                             if (letter == '(')
                             {
                                 break;
                             }
-                            name = name.Insert(0, letter.ToString());
+                            email = email.Insert(0, letter.ToString());
                         }
-                        worksheet.Cells[i, 1] = name.Trim(' ');
+                        worksheet.Cells[i, 7] = email;
 
-                        // legal
-                        worksheet.Cells[i, 4] = tempcontract.Trim(' ');
-                    }
-                    else if (tempcontract.Contains("/"))
-                    {
-                        tempcontract = tempcontract.Trim(')', ' ');
-
-                        // label
-                        string name = "";
-                        foreach (char letter in tempcontract.Reverse())
+                        if (tempcontract.Contains("("))
                         {
-                            tempcontract = tempcontract.Remove(tempcontract.Length - 1);
-                            if (letter == '/')
-                            {
-                                break;
-                            }
-                            name = name.Insert(0, letter.ToString());
-                        }
-                        worksheet.Cells[i, 1] = name.Trim(' ');
+                            tempcontract = tempcontract.Trim(')', ' ');
 
-                        // legal
-                        worksheet.Cells[i, 4] = tempcontract.Trim(' ');
+                            // label
+                            string name = "";
+                            foreach (char letter in tempcontract.Reverse())
+                            {
+                                tempcontract = tempcontract.Remove(tempcontract.Length - 1);
+                                if (letter == '(')
+                                {
+                                    break;
+                                }
+                                name = name.Insert(0, letter.ToString());
+                            }
+                            worksheet.Cells[i, 1] = name.Trim(' ');
+
+                            // legal
+                            worksheet.Cells[i, 4] = tempcontract.Trim(' ');
+                        }
+                        else if (tempcontract.Contains("/"))
+                        {
+                            tempcontract = tempcontract.Trim(')', ' ');
+
+                            // label
+                            string name = "";
+                            foreach (char letter in tempcontract.Reverse())
+                            {
+                                tempcontract = tempcontract.Remove(tempcontract.Length - 1);
+                                if (letter == '/')
+                                {
+                                    break;
+                                }
+                                name = name.Insert(0, letter.ToString());
+                            }
+                            worksheet.Cells[i, 1] = name.Trim(' ');
+
+                            // legal
+                            worksheet.Cells[i, 4] = tempcontract.Trim(' ');
+                        }
+                        else
+                        {
+                            worksheet.Cells[i, 4] = contract.Substring(0, contract.IndexOf("(")).Trim(' ');
+                            worksheet.Cells[i, 1] = contract.Substring(0, contract.IndexOf("(")).Trim(' ');
+                        }
+                        i++;
                     }
-                    else
-                    {
-                        worksheet.Cells[i, 4] = contract.Substring(0, contract.IndexOf("(")).Trim(' ');
-                        worksheet.Cells[i, 1] = contract.Substring(0, contract.IndexOf("(")).Trim(' ');
-                    }
-                    i++;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error Setting up or leaving Excel.");
+                    return;
                 }
 
                 eApp.Visible = true;
-                eApp.Quit();
+
+                #endregion
+
+                #region Move emails
+
+                foreach(Outlook.MailItem msg in messages)
+                {
+                    msg.Move(contractsDestFolder);
+                    msg.UnRead = false;
+                }
+
+                #endregion
+
+                #region Global
+
+                // Release Outlook
+                try
+                {
+                    oNameSpace.Logoff();
+                    oApp.Quit();
+
+                    messages = null;
+                    items = null;
+                    contractsDestFolder = null;
+                    contractsSourceFolder = null;
+                    oNameSpace = null;
+                    oApp = null;
+                }
+                catch
+                {
+
+                }
+
+                // Release Excel
+                try
+                {
+                    eApp.Quit();
+
+                    worksheet = null;
+                    workbook = null;
+                    eApp = null;
+                }
+                catch
+                {
+
+                }
+
+                Settings.Default.EmailAddress = EmailAddressTextBox.Text;
+                Settings.Default.SourceFolder = SourceFolderTextBox.Text;
+                Settings.Default.DestFolder = DestFolderTextBox.Text;
+                Settings.Default.Save();
 
                 #endregion
             }
@@ -221,5 +301,67 @@ namespace ShellBeeHelper.Tabs
                 Log.Error(ex, "Error thrown to higher level to avoid crashing.");
             }
         }
+
+        private void EmailAddressTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (IsValidEmail(EmailAddressTextBox.Text))
+            {
+                EmailAddressTextBox.Background = System.Windows.Media.Brushes.White;
+            }
+            else
+            {
+                EmailAddressTextBox.Background = System.Windows.Media.Brushes.Red;
+            }
+        }
+
+        #endregion
+
+        #region Methods and Functions
+
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                // Normalize the domain
+                email = Regex.Replace(email, @"(@)(.+)$", DomainMapper,
+                                      RegexOptions.None, TimeSpan.FromMilliseconds(200));
+
+                // Examines the domain part of the email and normalizes it.
+                string DomainMapper(Match match)
+                {
+                    // Use IdnMapping class to convert Unicode domain names.
+                    var idn = new IdnMapping();
+
+                    // Pull out and process domain name (throws ArgumentException on invalid)
+                    string domainName = idn.GetAscii(match.Groups[2].Value);
+
+                    return match.Groups[1].Value + domainName;
+                }
+            }
+            catch (RegexMatchTimeoutException e)
+            {
+                return false;
+            }
+            catch (ArgumentException e)
+            {
+                return false;
+            }
+
+            try
+            {
+                return Regex.IsMatch(email,
+                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        #endregion
     }
 }
