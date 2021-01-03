@@ -8,12 +8,12 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ShellBeeHelper")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyDescription("Helper program for Shelby so she can play video games sooner")]
+[assembly: AssemblyConfiguration("This is a user-specific application with debugging features included")]
+[assembly: AssemblyCompany("Sauce Inc.?")]
 [assembly: AssemblyProduct("ShellBeeHelper")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("Sauce?")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
