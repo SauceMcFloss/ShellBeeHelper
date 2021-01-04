@@ -20,3 +20,5 @@ C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Release\ShellBeeHelp
 C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Release\ShellBeeHelper.application
 C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Release\ShellBeeHelper.exe
 C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Release\ShellBeeHelper.pdb
+C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Release\Tabs\VideoSheetConverterTab.g.cs
+C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Release\Tabs\VideoSheetConverterTab.baml

@@ -14,7 +14,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -32,7 +32,7 @@
         <TextBox x:Name="DestFolderTextBox" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5" />
 
         <Button x:Name="ScanButton" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="5" 
-                Content="Scan for Contracts" 
+                Content="Scan for Contracts" Padding="5"
                 Click="ScanButton_Click" />
     </Grid>
 </UserControl>

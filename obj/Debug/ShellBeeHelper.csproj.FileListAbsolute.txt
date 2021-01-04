@@ -53,3 +53,9 @@ C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Debug\ShellBeeHelper
 C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Debug\ShellBeeHelper.csproj.CoreCompileInputs.cache
 C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Debug\ShellBeeHelper.exe
 C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Debug\ShellBeeHelper.pdb
+C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\bin\Debug\ShellBeeHelper.exe.manifest
+C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\bin\Debug\ShellBeeHelper.application
+C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Debug\Tabs\VideoSheetConverterTab.g.cs
+C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Debug\Tabs\VideoSheetConverterTab.baml
+C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Debug\ShellBeeHelper.exe.manifest
+C:\Users\tomlu\OneDrive\Documents\GitHub\ShellBeeHelper\obj\Debug\ShellBeeHelper.application

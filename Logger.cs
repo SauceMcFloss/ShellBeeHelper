@@ -13,9 +13,9 @@ namespace ShellBeeHelper
     {
         #region Constructors
 
-        public Logger()
+        public Logger(string logPath)
         {
-
+            LogPath = logPath;
         }
 
         #endregion
@@ -29,7 +29,7 @@ namespace ShellBeeHelper
             set { _LogBox = value; }
         }
 
-        public static string LogPath = "C:\\Users\\" + Environment.UserName + "\\Desktop\\ShellBeeHelper.log";
+        public string LogPath = "";
 
         #endregion
 
