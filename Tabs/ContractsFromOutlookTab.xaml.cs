@@ -98,7 +98,7 @@ namespace ShellBeeHelper.Tabs
                     {
                         foreach(Outlook.MailItem msg in items)
                         {
-                            if (msg.SenderName.Contains("DocuSign"))
+                            if (msg.SenderName.Contains("DocuSign")) // DocuSign is an older format that isn't used anymore. just skip them
                             {
                                 Log.Log("Encountered DocuSign.");
                                 continue;
@@ -106,11 +106,26 @@ namespace ShellBeeHelper.Tabs
                             try
                             {
                                 string importantContent = "";
-                                if (msg.SenderName == "HelloSign" || msg.Subject.Contains("You've been copied on Zojak"))
+                                if (msg.SenderName == "HelloSign")
                                 {
-                                    importantContent = msg.Body.Substring(msg.Body.IndexOf("@zojakworldwide.com") + 31);
-                                    importantContent = importantContent.Substring(0, importantContent.IndexOf("@zojakworldwide.com"));
-                                    importantContent = importantContent.Substring(0, importantContent.IndexOf("\r\n"));
+                                    if (msg.Subject.Contains("You've been copied on Zojak"))
+                                    {
+                                        importantContent = msg.Body.Substring(msg.Body.IndexOf("@zojakworldwide.com") + 31);
+                                        //importantContent = importantContent.Substring(0, importantContent.IndexOf("@zojakworldwide.com"));
+                                        importantContent = importantContent.Substring(0, importantContent.IndexOf("\r\n"));
+                                    }
+                                    else if(msg.Subject.Contains("has been signed by"))
+                                    {
+                                        importantContent = msg.Body.Substring(msg.Body.IndexOf("Signer") + 11);
+                                        //importantContent = importantContent.Substring(0, importantContent.IndexOf("@zojakworldwide.com"));
+                                        importantContent = importantContent.Substring(0, importantContent.IndexOf("\r\n"));
+                                    }
+                                    else if (msg.Subject.Contains("Everyone has signed"))
+                                    {
+                                        importantContent = msg.Body.Substring(msg.Body.IndexOf("Signers") + 12);
+                                        //importantContent = importantContent.Substring(0, importantContent.IndexOf("@zojakworldwide.com"));
+                                        importantContent = importantContent.Substring(0, importantContent.IndexOf("\r\n"));
+                                    }
                                 }
                                 else if (msg.Body.Contains("The document is being sent to:"))
                                 {
@@ -120,8 +135,8 @@ namespace ShellBeeHelper.Tabs
                                 }
                                 else if (msg.Body.Contains("The document is being sent in this order:"))
                                 {
-                                    importantContent = msg.Body.Substring(msg.Body.IndexOf("The document is being sent in this order:") + 49);
-                                    importantContent = importantContent.Substring(0, importantContent.IndexOf("@zojakworldwide.com"));
+                                    importantContent = msg.Body.Substring(msg.Body.IndexOf("1. ") + 3);
+                                    //importantContent = importantContent.Substring(0, importantContent.IndexOf("@zojakworldwide.com"));
                                     importantContent = importantContent.Substring(0, importantContent.IndexOf("\r\n"));
                                 }
                                 else
@@ -244,7 +259,7 @@ namespace ShellBeeHelper.Tabs
                 eApp.Visible = true;
 
                 #endregion
-
+#if !DEBUG
                 #region Move emails
 
                 foreach(Outlook.MailItem msg in messages)
@@ -254,7 +269,7 @@ namespace ShellBeeHelper.Tabs
                 }
 
                 #endregion
-
+#endif
                 #region Global
 
                 // Release Outlook
