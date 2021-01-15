@@ -15,6 +15,8 @@
         </Grid.ColumnDefinitions>
 
         <TabControl x:Name="TabsList" Grid.Column="0" Margin="5" />
-        <TextBlock x:Name="LogBox" Grid.Column="1" Margin="5" TextWrapping="Wrap" />
+        <ScrollViewer Grid.Column="1" Margin="5">
+            <TextBlock x:Name="LogBox" Margin="5" TextWrapping="Wrap" />
+        </ScrollViewer>
     </Grid>
 </Window>
